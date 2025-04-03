@@ -1,18 +1,78 @@
+<script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
+
+	type CharacterState = 'front' | 'left' | 'right';
+
+	let cursorX: number = 0;
+	let lastCursorX: number = 0;
+
+	let characterX: number = 50;
+	const characterY: number = 0;
+
+	let characterState: CharacterState = 'front';
+
+	const characterImages: Record<CharacterState, string> = {
+		front: '/images/character/c-front.svg',
+		left: '/images/character/c-left.svg',
+		right: '/images/character/c-right.svg'
+	};
+
+	function handleMouseMove(event: MouseEvent): void {
+		cursorX = (event.clientX / window.innerWidth) * 100;
+
+		if (cursorX > lastCursorX) {
+			characterState = 'right';
+		} else if (cursorX < lastCursorX) {
+			characterState = 'left';
+		}
+
+		characterX = cursorX;
+
+		lastCursorX = cursorX;
+	}
+
+	function handleMouseStop(): void {
+		characterState = 'front';
+	}
+
+	onMount(() => {
+		window.addEventListener('mousemove', handleMouseMove);
+
+		const stopInterval = setInterval(() => {
+			if (cursorX === lastCursorX) {
+				handleMouseStop();
+			}
+		}, 1000);
+
+		onDestroy(() => {
+			window.removeEventListener('mousemove', handleMouseMove);
+			clearInterval(stopInterval);
+		});
+	});
+</script>
+
 <div
 	class="relative mx-auto h-screen w-full overflow-hidden bg-cover bg-no-repeat p-1 text-white"
 	style="background-image: url('/images/hero.png'); background-size: cover; background-position: center;"
 >
-	<!-- Border Image -->
 	<img
 		src="/images/border.svg"
 		alt="Border"
-		class="absolute z-10 opacity-0 transition-all duration-300 ease-in-out hover:cursor-pointer hover:opacity-100"
+		class="absolute z-20 opacity-0 transition-all duration-300 ease-in-out hover:cursor-pointer hover:opacity-100"
 		style="top: 47vh; left: 34vw; width: 14vw; height: 17vw;"
+	/>
+
+	<img
+		src={characterImages[characterState]}
+		alt="Character"
+		class="absolute z-10 transition-transform duration-100 ease-in"
+		{...{
+			style: `left: ${characterX}vw; bottom: -90px; height:80vh `
+		}}
 	/>
 
 	<img src="/images/fence.svg" alt="Fence" class="absolute bottom-0 left-0 z-20 w-full" />
 
-	<!-- Text Content -->
 	<div class="absolute right-0 bottom-0 z-20 mb-14 px-5 md:mb-20 md:px-10">
 		<h1 class="mb-1 text-2xl font-bold md:mb-3 md:text-6xl">Movei asd sad sad asd sad sar</h1>
 		<p class="mb-2 text-sm md:mb-5 md:text-lg">
