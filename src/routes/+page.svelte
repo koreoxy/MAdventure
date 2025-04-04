@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CardHover from '$lib/components/CardHover.svelte';
 	import { onMount, onDestroy } from 'svelte';
 
 	type CharacterState = 'front' | 'left' | 'right';
@@ -55,12 +56,7 @@
 	class="relative mx-auto h-screen w-full overflow-hidden bg-cover bg-no-repeat p-1 text-white"
 	style="background-image: url('/images/hero.png'); background-size: cover; background-position: center;"
 >
-	<img
-		src="/images/border.svg"
-		alt="Border"
-		class="absolute z-20 opacity-0 transition-all duration-300 ease-in-out hover:cursor-pointer hover:opacity-100"
-		style="top: 47vh; left: 34vw; width: 14vw; height: 17vw;"
-	/>
+	<CardHover />
 
 	<img
 		src={characterImages[characterState]}
@@ -70,6 +66,10 @@
 			style: `left: ${characterX}vw; bottom: -90px; height:80vh `
 		}}
 	/>
+
+	<div
+		class="absolute bottom-0 left-0 z-30 h-[20vw] w-full bg-gradient-to-br from-[#CC9C49]/10 to-[#CC9C49]/45 mask-t-from-10%"
+	></div>
 
 	<img src="/images/fence.svg" alt="Fence" class="absolute bottom-0 left-0 z-20 w-full" />
 
